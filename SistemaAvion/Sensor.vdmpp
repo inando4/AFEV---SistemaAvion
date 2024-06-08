@@ -1,0 +1,15 @@
+class Sensor
+    types
+        public parametro = <AoA> | <Flaps> | <VelocidadAire>
+    instance variables
+        public mediciones: map parametro to real;
+    operations
+        public Sensor: map parametro to real ==> Sensor
+        Sensor(med) == (
+            mediciones := med;
+        );
+        public getMediciones: () ==> map parametro to real
+        getMediciones() == (
+            return mediciones;
+        );
+end Sensor

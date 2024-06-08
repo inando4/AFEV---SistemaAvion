@@ -1,0 +1,27 @@
+class Alerta
+    types
+        public String=seq of char;
+    instance variables
+        public estado: bool;
+        public mensaje: String;
+    operations
+        public Alerta: bool * String ==> Alerta
+        Alerta(a,m) == (
+            estado := a;
+            mensaje := m
+        );
+        public setMensaje:String ==> ()
+        setMensaje(m) == (
+            mensaje := m
+        );
+
+        public setEstado:bool ==> ()
+        setEstado(e) == (
+            estado := e
+        );
+
+        public getEstado:() ==> bool
+        getEstado() == (
+            return estado
+        );
+end Alerta

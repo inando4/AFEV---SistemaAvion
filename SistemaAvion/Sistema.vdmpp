@@ -1,0 +1,35 @@
+class Sistema 
+    types
+        public String = seq of char;
+    instance variables
+        public allSensors: set of Sensor;
+        public alarma: Alerta := new Alerta(false, "");
+        public mediciones: map Sensor'parametro to real;
+        public AoACritico: real := 12;
+    operations
+        public Sistema: set of Sensor ==> Sistema 
+        Sistema(s)==(
+            allSensors :=s;
+        );
+
+        public verificarMediciones: () ==> ()
+        verificarMediciones()==(
+            for all s in set allSensors do
+                mediciones:=s.getMediciones();
+
+                if mediciones(<Flaps>) = 0 then 
+                    AoACritico := 15
+                elseif mediciones(<VelocidadAire>) < 200 then
+                    AoACritico := 14;
+
+                if mediciones(<AoA>) >= AoACritico then 
+                    alarma.setEstado(true)  
+                else 
+                    alarma.setEstado(false);
+        );
+
+        public getEstado: () ==> bool
+        getEstado()==(
+           return alarma.getEstado();
+        );
+end Sistema
