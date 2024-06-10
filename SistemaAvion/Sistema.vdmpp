@@ -6,6 +6,7 @@ instance variables
     public allSensors: set of Sensor;
     public alarma: Alerta := new Alerta(false, "");
     public mediciones: map Sensor`parametro to real;
+    public AoACritico: real := 12;
     public estadosSensores: seq of SensorEstado := [];
 
 operations
@@ -22,30 +23,22 @@ operations
             mediciones := s.getMediciones();
 
             if mediciones(<Flaps>) = 0 then 
-                mediciones := mediciones ++ {<AoACritico> |-> 15}
+                AoACritico := 15
             elseif mediciones(<VelocidadAire>) < 200 then
-                mediciones := mediciones ++ {<AoACritico> |-> 14};
+                AoACritico := 14;
 
             if mediciones(<AoA>) >= AoACritico then 
                 estadosSensores := estadosSensores ^ [<Alerta>]
-            elseif mediciones(<AoA>) >= AoACritico - 2 then
+            elseif mediciones(<AoA>) >= AoACritico - 2 then -- Podría usarse como umbral de advertencia
                 estadosSensores := estadosSensores ^ [<Advertencia>]
             else
                 estadosSensores := estadosSensores ^ [<Normal>];
 
-        -- Determinar el valor prevalente
+        -- Determinar el valor "prevalente"
         estadosSensores := sortByCount(estadosSensores);
-
-        -- Posibilidad para hacer alguna acción basada en el valor prevalente, como actualizar la alarma o algo así
-        actualizarAlarma();
     );
 
-    private actualizarAlarma: () ==> ()
-    actualizarAlarma() == (
-        -- Por ejemplo, alguna lógica para actualizar la alarma según el estado "prevalente"
-    );
-
-    -- Conteo del que más se repite... "prevalente"
+    -- Retorna secuencia de estados ordenador empezando por el que mas se repite
     private sortByCount: seq of SensorEstado ==> seq of SensorEstado
     sortByCount(estados) ==
         return estados ++ []
