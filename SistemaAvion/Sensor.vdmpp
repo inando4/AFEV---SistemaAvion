@@ -3,6 +3,14 @@ class Sensor
         public parametro = <AoA> | <Flaps> | <VelocidadAire>
     instance variables
         public mediciones: map parametro to real;
+        --Condiciones para que el mapa no esté vacio
+        pre med <> {}
+        post mediciones = med
+    --Invariantes para que las mediciones estén dentro de un rango razonable
+    inv mediciones in set dom mediciones =>
+        (mediciones(<AoA>) >= 0 and mediciones(<AoA>) <= 90) and
+        (mediciones(<Flaps>) >= 0 and mediciones(<Flaps>) <= 40) and
+        (mediciones(<VelocidadAire>) >= 0)
     operations
         public Sensor: map parametro to real ==> Sensor
         Sensor(med) == (
