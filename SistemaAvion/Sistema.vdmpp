@@ -1,35 +1,57 @@
-class Sistema 
-    types
-        public String = seq of char;
-    instance variables
-        public allSensors: set of Sensor;
-        public alarma: Alerta := new Alerta(false, "");
-        public mediciones: map Sensor`parametro to real;
-        public AoACritico: real := 12;
-    operations
-        public Sistema: set of Sensor ==> Sistema 
-        Sistema(s)==(
-            allSensors :=s;
-        );
+class Sistema
+types
+    public String = seq of char;
+    public SensorEstado = <Normal> | <Advertencia> | <Alerta>;
+instance variables
+    public allSensors: set of Sensor;
+    public alarma: Alerta := new Alerta(false, "");
+    public mediciones: map Sensor`parametro to real;
+    public estadosSensores: seq of SensorEstado := [];
 
-        public verificarMediciones: () ==> ()
-        verificarMediciones()==(
-            for all s in set allSensors do
-                mediciones:=s.getMediciones();
+operations
+    public Sistema: set of Sensor ==> Sistema 
+    Sistema(s)==(
+        allSensors := s;
+    );
 
-                if mediciones(<Flaps>) = 0 then 
-                    AoACritico := 15
-                elseif mediciones(<VelocidadAire>) < 200 then
-                    AoACritico := 14;
+    public verificarMediciones: () ==> ()
+    verificarMediciones()==(
+        estadosSensores := [];
 
-                if mediciones(<AoA>) >= AoACritico then 
-                    alarma.setEstado(true)  
-                else 
-                    alarma.setEstado(false);
-        );
+        for all s in set allSensors do
+            mediciones := s.getMediciones();
 
-        public getEstado: () ==> bool
-        getEstado()==(
-           return alarma.getEstado();
-        );
+            if mediciones(<Flaps>) = 0 then 
+                mediciones := mediciones ++ {<AoACritico> |-> 15}
+            elseif mediciones(<VelocidadAire>) < 200 then
+                mediciones := mediciones ++ {<AoACritico> |-> 14};
+
+            if mediciones(<AoA>) >= AoACritico then 
+                estadosSensores := estadosSensores ^ [<Alerta>]
+            elseif mediciones(<AoA>) >= AoACritico - 2 then
+                estadosSensores := estadosSensores ^ [<Advertencia>]
+            else
+                estadosSensores := estadosSensores ^ [<Normal>];
+
+        -- Determinar el valor prevalente
+        estadosSensores := sortByCount(estadosSensores);
+
+        -- Realizar alguna acción basada en el valor prevalente, como actualizar la alarma
+        actualizarAlarma();
+    );
+
+    private actualizarAlarma: () ==> ()
+    actualizarAlarma() == (
+        -- Aquí puedes agregar la lógica para actualizar la alarma según el estado prevalente
+    );
+
+    private sortByCount: seq of SensorEstado ==> seq of SensorEstado
+    sortByCount(estados) ==
+        return estados ++ []
+        post forall e in set estados & count(e, estados) >= count(e, RESULT);
+
+    public getEstado: () ==> bool
+    getEstado()==(
+       return alarma.getEstado();
+    );
 end Sistema
