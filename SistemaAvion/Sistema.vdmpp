@@ -36,15 +36,16 @@ operations
         -- Determinar el valor prevalente
         estadosSensores := sortByCount(estadosSensores);
 
-        -- Realizar alguna acción basada en el valor prevalente, como actualizar la alarma
+        -- Posibilidad para hacer alguna acción basada en el valor prevalente, como actualizar la alarma o algo así
         actualizarAlarma();
     );
 
     private actualizarAlarma: () ==> ()
     actualizarAlarma() == (
-        -- Aquí puedes agregar la lógica para actualizar la alarma según el estado prevalente
+        -- Por ejemplo, alguna lógica para actualizar la alarma según el estado "prevalente"
     );
 
+    -- Conteo del que más se repite... "prevalente"
     private sortByCount: seq of SensorEstado ==> seq of SensorEstado
     sortByCount(estados) ==
         return estados ++ []
