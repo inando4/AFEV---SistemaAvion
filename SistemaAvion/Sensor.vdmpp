@@ -1,23 +1,32 @@
 class Sensor
     types
-        public parametro = <AoA> | <Flaps> | <VelocidadAire>
+        public parametro = <AoA> | <Flaps> | <VelocidadAire>;
+        public SensorEstado = <Normal> | <Advertencia> | <Alerta>;
     instance variables
         public mediciones: map parametro to real;
-        --Condiciones para que el mapa no esté vacio
-        pre med <> {}
-        post mediciones = med
     --Invariantes para que las mediciones estén dentro de un rango razonable
-    inv mediciones in set dom mediciones =>
-        (mediciones(<AoA>) >= 0 and mediciones(<AoA>) <= 90) and
-        (mediciones(<Flaps>) >= 0 and mediciones(<Flaps>) <= 40) and
-        (mediciones(<VelocidadAire>) >= 0)
+    inv forall m in set dom mediciones & 
+        (m = <AoA> => (mediciones(m) >= 0 and mediciones(m) <= 90)) and
+        (m = <Flaps> => (mediciones(m) >= 0 and mediciones(m) <= 40)) and
+        (m = <VelocidadAire> => mediciones(m) >= 0)
     operations
         public Sensor: map parametro to real ==> Sensor
         Sensor(med) == (
             mediciones := med;
-        );
+        )
+        pre med <> {|->}
+        post mediciones = med;
         public getMediciones: () ==> map parametro to real
         getMediciones() == (
             return mediciones;
+        );
+        public verificarEstado: () ==> SensorEstado
+        verificarEstado() == (
+            if exists m in set dom mediciones & mediciones(m) > 80 then
+                return <Alerta>
+            elseif exists m in set dom mediciones & mediciones(m) > 60 then
+                return <Advertencia>
+            else
+                return <Normal>
         );
 end Sensor
