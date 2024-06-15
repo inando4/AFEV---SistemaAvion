@@ -1,51 +1,39 @@
 class Sistema
-types
-    public String = seq of char;
-    public SensorEstado = <Normal> | <Advertencia> | <Alerta>;
-instance variables
-    public allSensors: set of Sensor;
-    public alarma: Alerta := new Alerta(false, "");
-    public mediciones: map Sensor`parametro to real;
-    public AoACritico: real := 12;
-    public estadosSensores: seq of SensorEstado := [];
-
-operations
-    public Sistema: set of Sensor ==> Sistema 
-    Sistema(s)==(
-        allSensors := s;
-    );
-
-    public verificarMediciones: () ==> ()
-    verificarMediciones()==(
-        estadosSensores := [];
-
-        for all s in set allSensors do
-            mediciones := s.getMediciones();
-
-            if mediciones(<Flaps>) = 0 then 
-                AoACritico := 15
-            elseif mediciones(<VelocidadAire>) < 200 then
-                AoACritico := 14;
-
-            if mediciones(<AoA>) >= AoACritico then 
-                estadosSensores := estadosSensores ^ [<Alerta>]
-            elseif mediciones(<AoA>) >= AoACritico - 2 then -- Podría usarse como umbral de advertencia
-                estadosSensores := estadosSensores ^ [<Advertencia>]
-            else
-                estadosSensores := estadosSensores ^ [<Normal>];
-
-        -- Determinar el valor "prevalente"
-        estadosSensores := sortByCount(estadosSensores);
-    );
-
-    -- Retorna secuencia de estados ordenador empezando por el que mas se repite
-    private sortByCount: seq of SensorEstado ==> seq of SensorEstado
-    sortByCount(estados) ==
-        return estados ++ []
-        post forall e in set estados & count(e, estados) >= count(e, RESULT);
-
-    public getEstado: () ==> bool
-    getEstado()==(
-       return alarma.getEstado();
-    );
+    types
+        public SensorEstado = <Normal> | <Advertencia> | <Alerta>;
+    instance variables
+        public sensor1: Sensor;
+        public sensor2: Sensor;
+        public sensor3: Sensor;
+        public alerta: Alerta;
+    operations
+        public Sistema: Sensor * Sensor * Sensor ==> Sistema
+        Sistema(s1, s2, s3) == (
+            sensor1 := s1;
+            sensor2 := s2;
+            sensor3 := s3;
+            alerta := new Alerta(false, "");
+        )
+        post sensor1 = s1 and sensor2 = s2 and sensor3 = s3 and alerta.getEstado() = false and alerta.getMensaje() = "";
+        
+        public verificarMediciones: () ==> ()
+        verificarMediciones() == (
+            dcl estado1: SensorEstado := sensor1.verificarEstado(),
+                estado2: SensorEstado := sensor2.verificarEstado(),
+                estado3: SensorEstado := sensor3.verificarEstado();
+            
+            if estado1 = <Alerta> or estado2 = <Alerta> or estado3 = <Alerta> then (
+                alerta.setMensaje("Alerta: Uno o más sensores están en estado de alerta.");
+                alerta.setEstado(true);
+            )
+            elseif estado1 = <Advertencia> or estado2 = <Advertencia> or estado3 = <Advertencia> then (
+                alerta.setMensaje("Advertencia: Uno o más sensores están en estado de advertencia.");
+                alerta.setEstado(true);
+            )
+            else (
+                alerta.setMensaje("Normal: Todos los sensores están en estado normal.");
+                alerta.setEstado(false);
+            )
+        );
+        
 end Sistema
