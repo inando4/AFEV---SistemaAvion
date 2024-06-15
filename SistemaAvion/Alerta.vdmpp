@@ -5,16 +5,17 @@ class Alerta
         public estado: bool;
         public mensaje: String;
     --Para que el mensaje de la alerta no sea una cadena vacía si la alerta está activada
-    inv estado => mensaje <> ""
-    pre not a or (a and m <> "")
-    post estado = a and mensaje = m
+    inv estado => mensaje <> "";
 
     operations
         public Alerta: bool * String ==> Alerta
         Alerta(a,m) == (
             estado := a;
             mensaje := m
-        );
+        )
+        pre not a or (a and m <> "")
+        post estado = a and mensaje = m;
+
         public setMensaje:String ==> ()
         setMensaje(m) == (
             mensaje := m
@@ -28,5 +29,10 @@ class Alerta
         public getEstado:() ==> bool
         getEstado() == (
             return estado
+        );
+
+        public getMensaje:() ==> String
+        getMensaje() == (
+            return mensaje
         );
 end Alerta
