@@ -10,7 +10,7 @@ create sensor3 := new Sensor({<AoA> |-> 35, <Flaps> |-> 22, <VelocidadAire> |-> 
 create system := new Sistema(sensor1, sensor2, sensor3)
 
 -- Verificar mediciones en diferentes estados
-system.verificarMediciones()
+print system.verificarMediciones()
 
 -- Imprimir estado y mensaje de alerta
 print system.getAlertEstado()
@@ -23,7 +23,7 @@ print sensor3.verificarEstadoVelocidad()
 
 -- Cambiar mediciones y volver a verificar
 sensor1.mediciones := {<AoA> |-> 55, <Flaps> |-> 15, <VelocidadAire> |-> 90}
-system.verificarMediciones()
+print system.verificarMediciones()
 
 -- Imprimir estado y mensaje de alerta después del cambio
 print system.getAlertEstado()
@@ -32,8 +32,8 @@ print system.getAlertMensaje()
 -- Llamar a todas las operaciones de `Alerta`
 system.alerta.setMensaje("Prueba de mensaje")
 system.alerta.setEstado(true)
-print system.getAlertMensaje()
-print system.getAlertEstado()
+print system.alerta.getMensaje()
+print system.alerta.getEstado()
 
 -- Llamar a todas las operaciones de `Sensor`
 print sensor1.getMediciones()
@@ -42,12 +42,12 @@ print sensor3.verificarEstadoGeneral()
 
 -- Realizar más verificaciones para cubrir todas las condiciones
 sensor2.mediciones := {<AoA> |-> 65, <Flaps> |-> 30, <VelocidadAire> |-> 105}
-system.verificarMediciones()
+print system.verificarMediciones()
 print system.getAlertEstado()
 print system.getAlertMensaje()
 
 sensor3.mediciones := {<AoA> |-> 10, <Flaps> |-> 12, <VelocidadAire> |-> 60}
-system.verificarMediciones()
+print system.verificarMediciones()
 print system.getAlertEstado()
 print system.getAlertMensaje()
 
