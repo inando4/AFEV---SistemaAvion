@@ -15,13 +15,13 @@ class Sistema
             alerta := new Alerta(false, "");
         )
         post sensor1 = s1 and sensor2 = s2 and sensor3 = s3 and alerta.getEstado() = false and alerta.getMensaje() = "";
-        
+
         public verificarMediciones: () ==> ()
         verificarMediciones() == (
             dcl estado1: SensorEstado := sensor1.verificarEstadoGeneral(),
                 estado2: SensorEstado := sensor2.verificarEstadoGeneral(),
                 estado3: SensorEstado := sensor3.verificarEstadoGeneral();
-            
+
             if estado1 = <Alerta> or estado2 = <Alerta> or estado3 = <Alerta> then (
                 alerta.setMensaje("Alerta: Uno o más sensores están en estado de alerta.");
                 alerta.setEstado(true);
@@ -35,5 +35,15 @@ class Sistema
                 alerta.setEstado(false);
             )
         );
-        
+
+        public getAlertEstado: () ==> bool
+        getAlertEstado() == (
+            return alerta.getEstado();
+        );
+
+        public getAlertMensaje: () ==> seq of char
+        getAlertMensaje() == (
+            return alerta.getMensaje();
+        );
+
 end Sistema

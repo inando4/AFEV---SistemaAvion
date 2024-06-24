@@ -1,6 +1,6 @@
 class Alerta
     types
-        public String=seq of char;
+        public String = seq of char;
     instance variables
         public estado: bool;
         public mensaje: String;
@@ -8,30 +8,30 @@ class Alerta
 
     operations
         public Alerta: bool * String ==> Alerta
-        Alerta(a,m) == (
+        Alerta(a, m) == (
             estado := a;
-            mensaje := m
+            mensaje := m;
         )
         pre not a or (a and m <> "")
         post estado = a and mensaje = m;
 
-        public setMensaje:String ==> ()
+        public setMensaje: String ==> ()
         setMensaje(m) == (
-            mensaje := m
+            mensaje := m;
         );
 
-        public setEstado:bool ==> ()
+        public setEstado: bool ==> ()
         setEstado(e) == (
-            estado := e
+            estado := e;
         );
 
-        public getEstado:() ==> bool
+        public getEstado: () ==> bool
         getEstado() == (
-            return estado
+            return estado;
         );
 
-        public getMensaje:() ==> String
+        public getMensaje: () ==> String
         getMensaje() == (
-            return mensaje
+            return mensaje;
         );
 end Alerta

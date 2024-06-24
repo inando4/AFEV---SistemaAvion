@@ -15,10 +15,12 @@ class Sensor
         )
         pre med <> {|->}
         post mediciones = med;
+
         public getMediciones: () ==> map parametro to real
         getMediciones() == (
             return mediciones;
         );
+
         public verificarEstadoAoA: () ==> SensorEstado
         verificarEstadoAoA() == (
             if mediciones(<AoA>) > 50 then
@@ -28,6 +30,7 @@ class Sensor
             else
                 return <Normal>
         );
+
         public verificarEstadoFlaps: () ==> SensorEstado
         verificarEstadoFlaps() == (
             if mediciones(<Flaps>) > 25 then
@@ -37,6 +40,7 @@ class Sensor
             else
                 return <Normal>
         );
+
         public verificarEstadoVelocidad: () ==> SensorEstado
         verificarEstadoVelocidad() == (
             if mediciones(<VelocidadAire>) > 95 then
@@ -49,15 +53,14 @@ class Sensor
 
         public verificarEstadoGeneral: () ==> SensorEstado
         verificarEstadoGeneral() == (
-            let estadoAoA = verificarEstadoAoA(),
-                estadoFlaps = verificarEstadoFlaps(),
-                estadoVelocidad = verificarEstadoVelocidad()
-            in
-                if estadoAoA = <Alerta> or estadoFlaps = <Alerta> or estadoVelocidad = <Alerta> then
-                    return <Alerta>
-                elseif estadoAoA = <Advertencia> or estadoFlaps = <Advertencia> or estadoVelocidad = <Advertencia> then
-                    return <Advertencia>
-                else
-                    return <Normal>
+            dcl estadoAoA : SensorEstado := verificarEstadoAoA();
+            dcl estadoFlaps : SensorEstado := verificarEstadoFlaps();
+            dcl estadoVelocidad : SensorEstado := verificarEstadoVelocidad();
+            if estadoAoA = <Alerta> or estadoFlaps = <Alerta> or estadoVelocidad = <Alerta> then
+                return <Alerta>
+            elseif estadoAoA = <Advertencia> or estadoFlaps = <Advertencia> or estadoVelocidad = <Advertencia> then
+                return <Advertencia>
+            else
+                return <Normal>
         );
 end Sensor
