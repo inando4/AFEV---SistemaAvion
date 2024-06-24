@@ -4,11 +4,10 @@ class Sensor
         public SensorEstado = <Normal> | <Advertencia> | <Alerta>;
     instance variables
         public mediciones: map parametro to real;
-    --Invariantes para que las mediciones estén dentro de un rango razonable
     inv forall m in set dom mediciones & 
-        (m = <AoA> => (mediciones(m) >= 0 and mediciones(m) <= 90)) and
-        (m = <Flaps> => (mediciones(m) >= 0 and mediciones(m) <= 40)) and
-        (m = <VelocidadAire> => mediciones(m) >= 0)
+        (m = <AoA> => (mediciones(m) >= 0 and mediciones(m) <= 60)) and
+        (m = <Flaps> => (mediciones(m) >= 10 and mediciones(m) <= 30)) and
+        (m = <VelocidadAire> => (mediciones(m) >= 0 and mediciones(m) <= 103))
     operations
         public Sensor: map parametro to real ==> Sensor
         Sensor(med) == (
@@ -20,13 +19,45 @@ class Sensor
         getMediciones() == (
             return mediciones;
         );
-        public verificarEstado: () ==> SensorEstado
-        verificarEstado() == (
-            if exists m in set dom mediciones & mediciones(m) > 80 then
+        public verificarEstadoAoA: () ==> SensorEstado
+        verificarEstadoAoA() == (
+            if mediciones(<AoA>) > 50 then
                 return <Alerta>
-            elseif exists m in set dom mediciones & mediciones(m) > 60 then
+            elseif mediciones(<AoA>) > 40 then
                 return <Advertencia>
             else
                 return <Normal>
+        );
+        public verificarEstadoFlaps: () ==> SensorEstado
+        verificarEstadoFlaps() == (
+            if mediciones(<Flaps>) > 25 then
+                return <Alerta>
+            elseif mediciones(<Flaps>) > 20 then
+                return <Advertencia>
+            else
+                return <Normal>
+        );
+        public verificarEstadoVelocidad: () ==> SensorEstado
+        verificarEstadoVelocidad() == (
+            if mediciones(<VelocidadAire>) > 95 then
+                return <Alerta>
+            elseif mediciones(<VelocidadAire>) > 85 then
+                return <Advertencia>
+            else
+                return <Normal>
+        );
+
+        public verificarEstadoGeneral: () ==> SensorEstado
+        verificarEstadoGeneral() == (
+            let estadoAoA = verificarEstadoAoA(),
+                estadoFlaps = verificarEstadoFlaps(),
+                estadoVelocidad = verificarEstadoVelocidad()
+            in
+                if estadoAoA = <Alerta> or estadoFlaps = <Alerta> or estadoVelocidad = <Alerta> then
+                    return <Alerta>
+                elseif estadoAoA = <Advertencia> or estadoFlaps = <Advertencia> or estadoVelocidad = <Advertencia> then
+                    return <Advertencia>
+                else
+                    return <Normal>
         );
 end Sensor

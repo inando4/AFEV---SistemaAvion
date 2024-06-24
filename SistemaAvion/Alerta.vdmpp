@@ -4,7 +4,6 @@ class Alerta
     instance variables
         public estado: bool;
         public mensaje: String;
-    --Para que el mensaje de la alerta no sea una cadena vacía si la alerta está activada
     inv estado => mensaje <> "";
 
     operations

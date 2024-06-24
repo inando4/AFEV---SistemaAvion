@@ -18,9 +18,9 @@ class Sistema
         
         public verificarMediciones: () ==> ()
         verificarMediciones() == (
-            dcl estado1: SensorEstado := sensor1.verificarEstado(),
-                estado2: SensorEstado := sensor2.verificarEstado(),
-                estado3: SensorEstado := sensor3.verificarEstado();
+            dcl estado1: SensorEstado := sensor1.verificarEstadoGeneral(),
+                estado2: SensorEstado := sensor2.verificarEstadoGeneral(),
+                estado3: SensorEstado := sensor3.verificarEstadoGeneral();
             
             if estado1 = <Alerta> or estado2 = <Alerta> or estado3 = <Alerta> then (
                 alerta.setMensaje("Alerta: Uno o más sensores están en estado de alerta.");
