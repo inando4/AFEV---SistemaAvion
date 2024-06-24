@@ -1,0 +1,80 @@
+>> tcov reset
+>> create sensor1 := new Sensor({<AoA> |-> 45, <Flaps> |-> 15, <VelocidadAire> |-> 90})
+>> create sensor2 := new Sensor({<AoA> |-> 55, <Flaps> |-> 28, <VelocidadAire> |-> 100})
+>> create sensor3 := new Sensor({<AoA> |-> 35, <Flaps> |-> 22, <VelocidadAire> |-> 85})
+>> create system := new Sistema(sensor1, sensor2, sensor3)
+>> system.verificarMediciones()
+Unknown command
+>> print system.verificarMediciones()
+(no return value)
+>> print system.getAlertEstado()
+true
+>> print system.getAlertMensaje()
+
+"Alerta: Uno o más sensores están en estado de alerta."
+>> print sensor1.verificarEstadoAoA()
+<Advertencia>
+>> print sensor2.verificarEstadoFlaps()
+<Alerta>
+>> print sensor3.verificarEstadoVelocidad()
+<Normal>
+>> sensor1.mediciones := {<AoA> |-> 55, <Flaps> |-> 15, <VelocidadAire> |-> 90}
+Unknown command
+>> system.verificarMediciones()
+Unknown command
+>> print system.verificarMediciones()
+(no return value)
+>> print system.getAlertMensaje()
+"Alerta: Uno o más sensores están en estado de alerta."
+>> system.alerta.setMensaje("Prueba de mensaje")
+Unknown command
+>> system.alerta.setEstado(true)
+Unknown command
+>> print system.alerta.getMensaje()
+"Alerta: Uno o más sensores están en estado de alerta."
+>> print system.alerta.getEstado()
+true
+>> print sensor1.getMediciones()
+{ <AoA> |-> 45, <Flaps> |-> 15, <VelocidadAire> |-> 90 }
+>> print sensor2.verificarEstadoGeneral()
+<Alerta>
+>> print sensor3.verificarEstadoGeneral()
+<Advertencia>
+>> sensor2.mediciones := {<AoA> |-> 65, <Flaps> |-> 30, <VelocidadAire> |-> 105}
+Unknown command
+>> print system.verificarMediciones()
+(no return value)
+>> print system.getAlertEstado()
+true
+>> print system.getAlertMensaje()
+"Alerta: Uno o más sensores están en estado de alerta."
+>> sensor3.mediciones := {<AoA> |-> 10, <Flaps> |-> 12, <VelocidadAire> |-> 60}
+Unknown command
+>> print system.verificarMediciones()
+(no return value)
+>> print system.getAlertEstado()
+true
+>> print system.getAlertMensaje()
+"Alerta: Uno o más sensores están en estado de alerta."
+>> tcov write vdm.tc
+>> rtinfo vdm.tc
+   71%      1  Alerta`Alerta
+  100%      5  Alerta`getEstado
+  100%      4  Alerta`setEstado
+  100%      6  Alerta`getMensaje
+  100%      4  Alerta`setMensaje
+   81%  Alerta
+  100%      3  Sensor`Sensor
+  100%      1  Sensor`getMediciones
+  100%     15  Sensor`verificarEstadoAoA
+  100%     15  Sensor`verificarEstadoFlaps
+   86%     14  Sensor`verificarEstadoGeneral
+  100%     15  Sensor`verificarEstadoVelocidad
+   95%  Sensor
+  100%      1  Sistema`Sistema
+  100%      3  Sistema`getAlertEstado
+  100%      4  Sistema`getAlertMensaje
+   48%      4  Sistema`verificarMediciones
+   71%  Sistema
+
+Total Coverage: 83%
