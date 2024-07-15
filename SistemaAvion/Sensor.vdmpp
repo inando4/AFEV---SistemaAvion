@@ -1,66 +1,16 @@
 class Sensor
-    types
-        public parametro = <AoA> | <Flaps> | <VelocidadAire>;
-        public SensorEstado = <Normal> | <Advertencia> | <Alerta>;
-    instance variables
-        public mediciones: map parametro to real;
-    inv forall m in set dom mediciones & 
-        (m = <AoA> => (mediciones(m) >= 0 and mediciones(m) <= 60)) and
-        (m = <Flaps> => (mediciones(m) >= 10 and mediciones(m) <= 30)) and
-        (m = <VelocidadAire> => (mediciones(m) >= 0 and mediciones(m) <= 103))
-    operations
-        public Sensor: map parametro to real ==> Sensor
-        Sensor(med) == (
-            mediciones := med;
-        )
-        pre med <> {|->}
-        post mediciones = med;
+types
+    public Parametro = <AoB> | <Flaps> | <Velocidad>;
+instance variables
+    private mediciones: map Parametro to real;
+operations
+    public Sensor: map Parametro to real ==> Sensor
+    Sensor(med) == (
+        mediciones := med;
+    );
 
-        public getMediciones: () ==> map parametro to real
-        getMediciones() == (
-            return mediciones;
-        );
-
-        public verificarEstadoAoA: () ==> SensorEstado
-        verificarEstadoAoA() == (
-            if mediciones(<AoA>) > 50 then
-                return <Alerta>
-            elseif mediciones(<AoA>) > 40 then
-                return <Advertencia>
-            else
-                return <Normal>
-        );
-
-        public verificarEstadoFlaps: () ==> SensorEstado
-        verificarEstadoFlaps() == (
-            if mediciones(<Flaps>) > 25 then
-                return <Alerta>
-            elseif mediciones(<Flaps>) > 20 then
-                return <Advertencia>
-            else
-                return <Normal>
-        );
-
-        public verificarEstadoVelocidad: () ==> SensorEstado
-        verificarEstadoVelocidad() == (
-            if mediciones(<VelocidadAire>) > 95 then
-                return <Alerta>
-            elseif mediciones(<VelocidadAire>) > 85 then
-                return <Advertencia>
-            else
-                return <Normal>
-        );
-
-        public verificarEstadoGeneral: () ==> SensorEstado
-        verificarEstadoGeneral() == (
-            dcl estadoAoA : SensorEstado := verificarEstadoAoA();
-            dcl estadoFlaps : SensorEstado := verificarEstadoFlaps();
-            dcl estadoVelocidad : SensorEstado := verificarEstadoVelocidad();
-            if estadoAoA = <Alerta> or estadoFlaps = <Alerta> or estadoVelocidad = <Alerta> then
-                return <Alerta>
-            elseif estadoAoA = <Advertencia> or estadoFlaps = <Advertencia> or estadoVelocidad = <Advertencia> then
-                return <Advertencia>
-            else
-                return <Normal>
-        );
+    public getMediciones: () ==> map Parametro to real
+    getMediciones() == (
+        return mediciones;
+    );
 end Sensor

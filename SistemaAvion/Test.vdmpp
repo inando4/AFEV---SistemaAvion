@@ -1,0 +1,44 @@
+class Test
+types
+    public String = seq of char;
+instance variables
+    alerta: Alerta;
+    sensor1: Sensor;
+    sensor2: Sensor;
+    sensor3: Sensor;
+    sensor4: Sensor;
+    sensor5: Sensor;
+    sistema: Sistema;
+
+operations
+    public run: () ==> bool
+    run() == (
+        return test();
+    );
+
+    public test: () ==> bool
+    test() == (
+        sensorTest();
+        sistema := new Sistema({sensor1});
+        sistema.verificarMediciones();
+        sistema := new Sistema({sensor2});
+        sistema.verificarMediciones();
+        sistema := new Sistema({sensor3});
+        sistema.verificarMediciones();
+        sistema := new Sistema({sensor4});
+        sistema.verificarMediciones();
+        sistema := new Sistema({sensor5});
+        sistema.verificarMediciones();
+        return sistema.alerta.getEstado();
+    );
+
+    public sensorTest: () ==> ()
+    sensorTest() == (
+        sensor1 := new Sensor({<AoB> |-> 15, <Flaps> |-> 0, <Velocidad> |-> 45});
+        sensor2 := new Sensor({<AoB> |-> 10, <Flaps> |-> 10, <Velocidad> |-> 40});
+        sensor3 := new Sensor({<AoB> |-> 25, <Flaps> |-> 30, <Velocidad> |-> 35});
+        sensor4 := new Sensor({<AoB> |-> 35, <Flaps> |-> 0, <Velocidad> |-> 50});
+        sensor5 := new Sensor({<AoB> |-> 5, <Flaps> |-> 20, <Velocidad> |-> 42});
+        alerta := new Alerta(false, "Normal");
+    );
+end Test

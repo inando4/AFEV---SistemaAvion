@@ -1,37 +1,28 @@
 class Alerta
-    types
-        public String = seq of char;
-    instance variables
-        public estado: bool;
-        public mensaje: String;
-    inv estado => mensaje <> "";
+types
+    public String = seq of char;
+instance variables
+    private estado: bool;
+    private mensaje: String;
+operations
+    public Alerta: bool * String ==> Alerta
+    Alerta(a, m) == (
+        estado := a;
+        mensaje := m;
+    );
 
-    operations
-        public Alerta: bool * String ==> Alerta
-        Alerta(a, m) == (
-            estado := a;
-            mensaje := m;
-        )
-        pre not a or (a and m <> "")
-        post estado = a and mensaje = m;
+    public setEstado: bool ==> ()
+    setEstado(e) == (
+        estado := e;
+    );
 
-        public setMensaje: String ==> ()
-        setMensaje(m) == (
-            mensaje := m;
-        );
+    public getEstado: () ==> bool
+    getEstado() == (
+        return estado;
+    );
 
-        public setEstado: bool ==> ()
-        setEstado(e) == (
-            estado := e;
-        );
-
-        public getEstado: () ==> bool
-        getEstado() == (
-            return estado;
-        );
-
-        public getMensaje: () ==> String
-        getMensaje() == (
-            return mensaje;
-        );
+    public setMensaje: String ==> ()
+    setMensaje(m) == (
+        mensaje := m;
+    );
 end Alerta

@@ -1,49 +1,38 @@
 class Sistema
-    types
-        public SensorEstado = <Normal> | <Advertencia> | <Alerta>;
-    instance variables
-        public sensor1: Sensor;
-        public sensor2: Sensor;
-        public sensor3: Sensor;
-        public alerta: Alerta;
-    operations
-        public Sistema: Sensor * Sensor * Sensor ==> Sistema
-        Sistema(s1, s2, s3) == (
-            sensor1 := s1;
-            sensor2 := s2;
-            sensor3 := s3;
-            alerta := new Alerta(false, "");
-        )
-        post sensor1 = s1 and sensor2 = s2 and sensor3 = s3 and alerta.getEstado() = false and alerta.getMensaje() = "";
+types
+    public String = seq of char;
+instance variables
+    public sensores: set of Sensor := {};
+    public mediciones: map Sensor`Parametro to real;
+    public alerta: Alerta := new Alerta(false, "Normal");
+operations
+    public Sistema: set of Sensor ==> Sistema
+    Sistema(s) == (
+        sensores := s;
+    );
 
-        public verificarMediciones: () ==> ()
-        verificarMediciones() == (
-            dcl estado1: SensorEstado := sensor1.verificarEstadoGeneral(),
-                estado2: SensorEstado := sensor2.verificarEstadoGeneral(),
-                estado3: SensorEstado := sensor3.verificarEstadoGeneral();
-
-            if estado1 = <Alerta> or estado2 = <Alerta> or estado3 = <Alerta> then (
-                alerta.setMensaje("Alerta: Uno o más sensores están en estado de alerta.");
-                alerta.setEstado(true);
-            )
-            elseif estado1 = <Advertencia> or estado2 = <Advertencia> or estado3 = <Advertencia> then (
-                alerta.setMensaje("Advertencia: Uno o más sensores están en estado de advertencia.");
-                alerta.setEstado(true);
-            )
-            else (
-                alerta.setMensaje("Normal: Todos los sensores están en estado normal.");
+    public verificarMediciones: () ==> ()
+    verificarMediciones() == (
+        for all sensor in set sensores do (
+            mediciones := sensor.getMediciones();
+            if mediciones(<AoB>) >= 0 and mediciones(<AoB>) <= 30 then (
+                if mediciones(<Flaps>) = 0 and mediciones(<Velocidad>) < 48 then (
+                    alerta.setEstado(true);
+                    alerta.setMensaje("Alerta: Peligro de pérdida con flaps UP y AoB entre 0° y 30°");
+                ) else if mediciones(<Flaps>) = 10 and mediciones(<Velocidad>) < 43 then (
+                    alerta.setEstado(true);
+                    alerta.setMensaje("Alerta: Peligro de pérdida con flaps a 10° y AoB entre 0° y 30°");
+                ) else if mediciones(<Flaps>) = 30 and mediciones(<Velocidad>) < 40 then (
+                    alerta.setEstado(true);
+                    alerta.setMensaje("Alerta: Peligro de pérdida con flaps a 30° y AoB entre 0° y 30°");
+                ) else (
+                    alerta.setEstado(false);
+                    alerta.setMensaje("Normal");
+                )
+            ) else (
                 alerta.setEstado(false);
+                alerta.setMensaje("Normal");
             )
-        );
-
-        public getAlertEstado: () ==> bool
-        getAlertEstado() == (
-            return alerta.getEstado();
-        );
-
-        public getAlertMensaje: () ==> seq of char
-        getAlertMensaje() == (
-            return alerta.getMensaje();
-        );
-
+        )
+    );
 end Sistema
